@@ -1,0 +1,438 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>Assignment 1</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/codelab-elements/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="assignment-1-salesforce-trifacta"
+                  title="Assignment 1"
+                  environment="web"
+                  feedback-link="https://github.com/VividhTalesara-Data/Automated-Kanban/blob/master/Issues">
+    
+      <google-codelab-step label="Acquire Valued Shoppers Challenge" duration="0">
+        <p>Consumer brands often offer discounts to attract new shoppers to buy their products. The most valuable customers are those who return after this initial incented purchase.  With enough purchase history, it is possible to predict which shoppers, when presented an offer, will buy a new item. However, identifying the shopper who will become a loyal buyer -- prior to the initial purchase -- is a more challenging task.</p>
+<p class="image-container"><img style="width: 433.50px" src="img\46715fac6213c825.png"></p>
+<p>The Acquire Valued Shoppers Challenge asks participants to predict which shoppers are most likely to repeat purchase. To aid with algorithmic development, we have provided complete, basket-level, pre-offer shopping history for a large set of shoppers who were targeted for an acquisition campaign. The incentive offered to that shopper and their post-incentive behavior is also provided.</p>
+<p>This challenge provides almost 350 million rows of completely anonymised transactional data from over 300,000 shoppers. It is one of the largest problems run on Kaggle to date.</p>
+<p><strong>Last Updated:</strong> 2019-10-22</p>
+<h2 is-upgraded><strong>Details about Tables and Fields</strong></h2>
+<p><em>Warning:</em> this is a large data set. The decompressed files require about 22GB of space.</p>
+<p>This data captures the process of offering incentives (a.k.a. coupons) to a large number of customers and forecasting those who will become loyal to the product. Let&#39;s say 100 customers are offered a discount to purchase two bottles of water. Of the 100 customers, 60 choose to redeem the offer. These 60 customers are the focus of this competition. You are asked to predict which of the 60 will return (during or after the promotional period) to purchase the same item again.</p>
+<p>To create this prediction, you are given a minimum of a year of shopping history prior to each customer&#39;s incentive, as well as the purchase histories of many other shoppers (some of whom will have received the same offer). The transaction history contains all items purchased, not just items related to the offer. Only one offer per customer is included in the data. The training set is comprised of offers issued before 2013-05-01. The test set is offers issued on or after 2013-05-01.</p>
+<p>Below are the gz.csv files we will work on :</p>
+<h3 is-upgraded><strong>Train &amp; Test Data</strong></h3>
+<p><strong><em>trainHistory.csv</em></strong> - contains the incentive offered to each customer and information about the behavioral response to the offer</p>
+<p><strong><em>testHistory.csv</em></strong> - contains the incentive offered to each customer but does not include their response (you are predicting the repeater column for each id in this file</p>
+<p><strong><em>history</em></strong></p>
+<p>id - A unique id representing a customer</p>
+<p>chain - An integer representing a store chain</p>
+<p>offer - An id representing a certain offer</p>
+<p>market - An id representing a geographical region</p>
+<p>repeattrips - The number of times the customer made a repeat purchase</p>
+<p>repeater - A boolean, equal to repeattrips &gt; 0</p>
+<p>offerdate - The date a customer received the offer</p>
+<h3 is-upgraded><strong>Transaction History Data</strong></h3>
+<p><strong><em>transactions.csv</em></strong> - contains transaction history for all customers for a period of at least 1 year prior to their offered incentive</p>
+<p><strong><em>transactions</em></strong></p>
+<p>id - see above</p>
+<p>chain - see above</p>
+<p>dept - An aggregate grouping of the Category (e.g. water)</p>
+<p>category - The product category (e.g. sparkling water)</p>
+<p>company - An id of the company that sells the item</p>
+<p>brand - An id of the brand to which the item belongs</p>
+<p>date - The date of purchase</p>
+<p>productsize - The amount of the product purchase (e.g. 16 oz of water)</p>
+<p>productmeasure - The units of the product purchase (e.g. ounces)</p>
+<p>purchasequantity - The number of units purchased</p>
+<p>purchaseamount - The dollar amount of the purchase</p>
+<h3 is-upgraded>Offers Data</h3>
+<p><strong><em>offers.csv </em></strong>- contains information about the offers.</p>
+<p><strong><em>Offers</em></strong></p>
+<p>offer - see above</p>
+<p>category - see above</p>
+<p>quantity - The number of units one must purchase to get the discount</p>
+<p>company - see above</p>
+<p>offervalue - The dollar value of the offer</p>
+<p>brand - see above</p>
+<aside class="warning"><p><strong>Note:</strong> The transactions file can be joined to the history file by (id,chain). The history file can be joined to the offers file by (offer). The transactions file can be joined to the offers file by (category, brand, company). A negative value in productquantity and purchaseamount indicates a return.</p>
+</aside>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Summary" duration="0">
+        <h2 is-upgraded><strong>Goal &amp; Problem Statement</strong></h2>
+<h3 is-upgraded>Finding if customer is a repeat buyer</h3>
+<p>Given the customer provided an offer will he/she make a purchase</p>
+<h3 is-upgraded>Exploratory Data Analysis of given data</h3>
+<p>Customer Transaction History</p>
+<p>Customer Train data with History if he made purchase with offer or not</p>
+<p>Offer details (37 unique offers)</p>
+<h2 is-upgraded><strong>Tools Leveraged</strong></h2>
+<h3 is-upgraded>Trifacta</h3>
+<ul>
+<li>For basic Joining</li>
+<li>cleaning of data</li>
+<li>For removing unwanted columns</li>
+</ul>
+<p><a href="https://www.trifacta.com/start-wrangling/" target="_blank"><paper-button class="colored" raised>Sign-up for Trifacta</paper-button></a></p>
+<h3 is-upgraded><strong>Salesforce</strong></h3>
+<ul>
+<li>To visualize the data</li>
+<li>For Exploratory Data Analysis</li>
+</ul>
+<p><a href="https://www.salesforce.com/" target="_blank"><paper-button class="colored" raised>Create Salesforce Account (free trial available</paper-button></a></p>
+<h3 is-upgraded><strong>Tableau</strong></h3>
+<ul>
+<li>As a backup visualization tool</li>
+<li>For Exploratory Data Analysis</li>
+</ul>
+<p><a href="https://www.tableau.com/products/trial" target="_blank"><paper-button class="colored" raised>Tableau (free trial available)</paper-button></a></p>
+<h3 is-upgraded><strong>Git</strong></h3>
+<ul>
+<li>To create Automated Kanban Board</li>
+</ul>
+<p><a href="https://github.com/" target="_blank"><paper-button class="colored" raised>Create your own GitHub account</paper-button></a></p>
+<h3 is-upgraded><strong>Python</strong></h3>
+<ul>
+<li>Performing basic EDA and cleaning data</li>
+<li>Creating features to train model</li>
+</ul>
+<p><a href="https://www.python.org/downloads/" target="_blank"><paper-button class="colored" raised><iron-icon icon="file-download"></iron-icon>Download Python</paper-button></a></p>
+<h2 is-upgraded>Major Difficulties / Blockers</h2>
+<ul>
+<li>Salesforce and Trifacta were new tools for us to work on. Learning to optimally utilize the features in two weeks duration was a tough task</li>
+<li>Salesforce is enterprise tool and have many versions. All versions have their benefits and limitations and we faced few due to lack of knowledge and expertise (PS: ended up creating 3 accounts on my name)</li>
+<li>Working on huge data (21 GB) and making strategy to sample that data was a big challenge</li>
+</ul>
+<h2 is-upgraded><strong>Approach</strong></h2>
+<h3 is-upgraded>Steps only</h3>
+<ol type="1" start="1">
+<li>Studied data to understand how it can be used and what each field means</li>
+<li>As Data was huge, we utilized tool &#34;CSV Chunker&#34; to split data in small separate csv files</li>
+<li>After brainstorming on data, we prepared a list of features on google doc which we later implemented in python using Jupyter notebook</li>
+<li>We learned more about Trifacta and Salesforce and how we can use it to get correct and clean data as well as get more insights from data</li>
+<li>After creating features, we decided to just focus on EDA as part of current Assignment and if time permits work on machine learning part I.e. LTV of customers, Prediction modeling, etc.</li>
+<li>We utilized Trifacta to Join offers and History table of customer, clean data where some values were 0 and remove unwanted columns</li>
+<li>Next step was to create custom objects in salesforce and then create respective fields for each custom object which we can map with our data </li>
+<li>Loaded cleaned data into Salesforce and created reports based on our filtering requirements</li>
+<li>Finally created Dynamic Dashboards in Salesforce</li>
+<li>Also on safer side we created basic dashboard in Tableau as well</li>
+</ol>
+<h3 is-upgraded>Features for Model Prediction - Python</h3>
+<ul>
+<li>(1,2,3) whether the customer has bought from category/brand/company</li>
+<li>(4,5,6) The purchaseamount they spent on category/brand/company</li>
+<li>(7,8,9) The purchasequantity they bought on category/brand/company</li>
+<li>(10,11,12,13) how many visits in last 30/60/90/120 days</li>
+<li>14. consistancy_level : (3: cover 10-12 months, 2: cover 7-9 months, 1: cover 4-6 months, 0: 0-3 months)</li>
+<li>(15,16,17)  Purchase_ability: The percentage of the purchase amount of one customer compared to the total purchase amount based on category/brand/company</li>
+<li>18. Repeat-buy-percentage: how many unique (category-brand-company) customer bought with a repeat buy / how many unique (category-brand-company) customer bought</li>
+<li>19. time since customers first transaction: offer date - first transaction</li>
+<li>20. whether user had returned the product before</li>
+<li>21. The percentage of return: how many times a customer returned / how many times a customer bought</li>
+</ul>
+<h3 is-upgraded><strong>Dashboard - Use cases</strong></h3>
+<ul>
+<li>Selected (time range / category / brand / company), observe the total purchase amount, purchase quantity, purchase times of different users within the specified range</li>
+<li>Observe the change in the amount and quantity of purchases per month for a user within 12 months.</li>
+<li>Observe the number of transactions for a certain category/brand/company within the specified time range</li>
+<li>For the company: observe the number of transactions and purchaseamount(sum) of different companies within the specified time range under the same type and the same brand.</li>
+<li>For the category: observe the number of transactions and purchaseamount(sum) of different categories within the specified time range under the same brand and the same company.</li>
+<li>For the brand: observe the number of transactions and purchaseamount(sum) of different brands within the specified time range under the same category and the same company.</li>
+<li>Does the user choose a category/brand/company that is not frequently selected because of the discount code?( Based on the offers&#39; information, observe if the code has a significant impact on users) </li>
+<li>Select all transaction records with purchaseamount &lt;0, observe the return status under type/brand/company.</li>
+<li>Select a certain category or brand or company and observe how long since the user purchased last time.</li>
+<li>Observe the changes of companies been selected by a user monthly under same brand and category.</li>
+<li>Observe the changes of brands been selected monthly by a user under same category and company.</li>
+<li>Observe the changes of categories been selected monthly by a user under same brand and company.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Data Preprocessing" duration="0">
+        <h2 is-upgraded>CVS Chunker</h2>
+<p>We had a huge data to work on and for the sake of Assignment we chose to keep the data limited and work only on a small chunk of data.</p>
+<p class="image-container"><img style="width: 624.00px" src="img\9c6a95e30d0fef56.png"></p>
+<ul>
+<li>CVS Chunker tool helped us to chunk data in multiple small csv&#39;s as shown in above screenshot</li>
+</ul>
+<h2 is-upgraded><strong>All DataFrames</strong></h2>
+<p>Transaction CSV : </p>
+<p class="image-container"><img style="width: 646.78px" src="img\4e5fae4670e1df23.png"></p>
+<ul>
+<li>We can notice that in Transaction csv we could notice that ID&#39;s are in sorted order which makes it quite easier for us to chunk data by customer ID as all of the transaction from respective customers are in order</li>
+<li>We have also removed columns like Productmeasure and Productsize from our model and exploratory data analysis</li>
+</ul>
+<p>History Train CSV:</p>
+<p class="image-container"><img style="width: 597.50px" src="img\ef58a12ce3623713.png"></p>
+<ul>
+<li>Using Train History we could learn which customer accepted our offer and became a repeated customers</li>
+</ul>
+<p>Offers CSV:</p>
+<p class="image-container"><img style="width: 600.50px" src="img\e4236cfe73dfe1a6.png"></p>
+<h2 is-upgraded>Feature Engineering</h2>
+<p><em><code>Feature 1,2,3 - </code></em></p>
+<p><code>Check if customer has bought before from respective Brand/Company/Category</code></p>
+<pre><code># Feature No.1,2,3
+
+id = []
+category_record = []
+brand_record = []
+company_record = []
+
+for n in idlist:
+    category_list = df_1[df_1[&#39;id&#39;]==n][&#39;category&#39;].values
+    category_name = df_2[df_2[&#39;id&#39;]==n][&#39;category&#39;].values
+    brand_list = df_1[df_1[&#39;id&#39;]==n][&#39;brand&#39;].values
+    brand_name = df_2[df_2[&#39;id&#39;]==n][&#39;brand&#39;].values
+    company_list = df_1[df_1[&#39;id&#39;]==n][&#39;company&#39;].values
+    company_name = df_2[df_2[&#39;id&#39;]==n][&#39;company&#39;].values
+    
+    if category_name in category_list:
+        category_record_new = 1
+    else:
+        category_record_new = 0
+    
+    if brand_name in brand_list:
+        brand_record_new = 1
+    else:
+        brand_record_new = 0
+   
+    if company_name in company_list:
+        company_record_new = 1
+    else:
+        company_record_new = 0
+    
+    id.append(n)
+    
+    category_record.append(category_record_new)
+    brand_record.append(brand_record_new)
+    company_record.append(company_record_new)
+    
+%time</code></pre>
+<p><em><code>Feature 4,5,6 -</code></em></p>
+<p><code>Total Purchase Amount customer has bought before from respective Brand/Company/Category</code></p>
+<pre><code># Feature No.4,5,6
+
+id = []
+category_spent = []
+brand_spent = []
+company_spent= []
+
+for n in idlist:
+    df_temp = df_1[df_1[&#39;id&#39;]==n]
+    
+    category_name = df_2[df_2[&#39;id&#39;]==n].squeeze()[&#39;category&#39;]
+    category_spent_new = df_temp[(df_temp[&#39;category&#39;].astype(int)== category_name) &amp; (df_temp[&#39;purchaseamount&#39;]&gt;0)][&#39;purchaseamount&#39;].sum()
+    
+    brand_name = df_2[df_2[&#39;id&#39;]==n].squeeze()[&#39;brand&#39;]
+    brand_spent_new = df_temp[(df_temp[&#39;brand&#39;].astype(int)== brand_name) &amp; (df_temp[&#39;purchaseamount&#39;]&gt;0)][&#39;purchaseamount&#39;].sum()
+    
+    company_name = df_2[df_2[&#39;id&#39;]==n].squeeze()[&#39;company&#39;]
+    company_spent_new = df_temp[(df_temp[&#39;company&#39;].astype(int)== company_name) &amp; (df_temp[&#39;purchaseamount&#39;]&gt;0)][&#39;purchaseamount&#39;].sum()
+    
+    id.append(n)
+    
+    category_spent.append(category_spent_new)
+    brand_spent.append(brand_spent_new)
+    company_spent.append(company_spent_new)
+    
+%time</code></pre>
+<p><em><code>Feature 7,8,9 -</code></em></p>
+<p><code>Total Quantity customer has bought before from respective Brand/Company/Category</code></p>
+<pre><code># Feature No.7,8,9
+
+id = []
+quantity_in_category = []
+quantity_in_brand = []
+quantity_in_company = []
+
+for n in idlist:
+    df_temp = df_1[df_1[&#39;id&#39;]==n]
+    
+    category_name = df_2[df_2[&#39;id&#39;]==n].squeeze()[&#39;category&#39;]
+    quantity_in_category_new = df_temp[df_temp[&#39;category&#39;].astype(int)== category_name][&#39;purchasequantity&#39;].sum()
+    
+    brand_name = df_2[df_2[&#39;id&#39;]==n].squeeze()[&#39;brand&#39;]
+    quantity_in_brand_new = df_temp[df_temp[&#39;brand&#39;].astype(int)== brand_name][&#39;purchasequantity&#39;].sum()
+    
+    company_name = df_2[df_2[&#39;id&#39;]==n].squeeze()[&#39;company&#39;]
+    quantity_in_company_new = df_temp[df_temp[&#39;company&#39;].astype(int)== company_name][&#39;purchasequantity&#39;].sum()
+    
+    id.append(n)
+    
+    quantity_in_category.append(quantity_in_category_new)
+    quantity_in_brand.append(quantity_in_brand)
+    quantity_in_company.append(quantity_in_company_new)
+    
+%time</code></pre>
+<p><em><code>Feature 19 -</code></em></p>
+<p><code>Time since customer made First Purchase</code></p>
+<pre><code># Feature No.19
+
+id = []
+purchase_duration = []
+
+for n in idlist:
+    offer_date = df_2[df_2[&#39;id&#39;]==n][&#39;offerdate&#39;]</code></pre>
+<p><em><code>Feature 20 -</code></em></p>
+<p><code>Check if customer has ever returned a product before</code></p>
+<pre><code># Feature No.20
+
+id = []
+return_record = []
+
+for n in idlist:
+    df_temp = df_1[df_1[&#39;id&#39;]==n]
+    if any(df_temp[&#39;purchaseamount&#39;].values &lt; 0):
+        return_record_new = 1
+    else: 
+        return_record_new = 0
+      
+    return_record.append(return_record_new)
+        </code></pre>
+<p><em><code>Feature 21 -</code></em></p>
+<p><code>Ratio of Total purchase v/s Total returns made by customers</code></p>
+<pre><code># Feature No.21
+
+id = []
+return_percentage = []
+
+for n in idlist:
+    df_temp = df_1[df_1[&#39;id&#39;]==n]
+    return_percentage_new = round(len(df_temp[df_temp[&#39;purchaseamount&#39;]&lt;0])/len(df_temp), 4)
+    
+    id.append(n)
+    
+    return_percentage.append(return_percentage_new)
+       
+%time</code></pre>
+<h2 is-upgraded><strong>Integrating Salesforce API</strong></h2>
+<aside class="special"><p><strong>Useful Github Link: </strong><a href="https://github.com/simple-salesforce/simple-salesforce" target="_blank"><strong>https://github.com/simple-salesforce/simple-salesforce</strong></a></p>
+<p><strong>Installation Link: </strong><a href="https://anaconda.org/conda-forge/simple-salesforce" target="_blank">https://anaconda.org/conda-forge/simple-salesforce</a></p>
+</aside>
+<ul>
+<li>Importing Salesforce and creating a session using authentication and security token</li>
+</ul>
+<p class="image-container"><img style="width: 624.00px" src="img\a696383854915240.png"></p>
+<ul>
+<li>Using Salesforce sf.query function to query Data in Salesforce</li>
+</ul>
+<p class="image-container"><img style="width: 685.00px" src="img\2b96de1978c33fcc.png"></p>
+<ul>
+<li>Similar to pandas, Salesforce has its describe() function</li>
+</ul>
+<p class="image-container"><img style="width: 698.50px" src="img\c3971bf556b147b6.png"></p>
+<h2 is-upgraded><strong>Automated Kanban Board</strong></h2>
+<ul>
+<li>We have created our Automated Kanban board to assign tasks and work with Agile methodology</li>
+<li>It also helps us to manage, prioritize and complete tasks on time</li>
+</ul>
+<p class="image-container"><img style="width: 624.00px" src="img\7f1004612f05844c.png"></p>
+<h2 is-upgraded><strong>Trifacta Joins and Data cleaning</strong></h2>
+<ul>
+<li>We loaded chunked Transaction CSV, Train History CSV and Offer CSV into Trifacta</li>
+</ul>
+<p class="image-container"><img style="width: 624.00px" src="img\427d768fe9c613a7.png"></p>
+<ul>
+<li>Firstly, We performed Inner join on Train History and Offers tables on ‘Offer&#39; column</li>
+<li>Later we filtered out only 20 customers as we planned to conduct analysis on 20 customers only due to lack of computing power</li>
+<li>Later we joined transaction and combined tables (train history + offers) on ‘Customer ID&#39; column </li>
+<li>Finally, we got all the transactions from those 20 customers</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="Dashboards" duration="0">
+        <p>We have created 3 Dashboards in all shown below:</p>
+<ul>
+<li>Offers Dashboards - Salesforce</li>
+<li>Customers Dashboards - Salesforce</li>
+<li>Tableau Dashboards</li>
+</ul>
+<h2 is-upgraded><strong>Offers Dashboard - Salesforce</strong></h2>
+<h3 is-upgraded>Offer by Brand/Company/Category <img style="width: 624.00px" src="img\bcfdea1de1a83e5.png"></h3>
+<h3 is-upgraded><strong>Offer by PurchaseAmount and Quantity</strong></h3>
+<p class="image-container"><img style="width: 624.00px" src="img\4bd87045d6ef492f.png"></p>
+<h3 is-upgraded><strong>Filter by specific Offer</strong></h3>
+<p class="image-container"><img style="width: 624.00px" src="img\f36a6fdab21dd05.png"></p>
+<h2 is-upgraded><strong>Customers Dashboard - Salesforce</strong></h2>
+<h3 is-upgraded><strong>Total Sales / Quantity</strong></h3>
+<p class="image-container"><img style="width: 624.00px" src="img\ee36b64522c641e4.png"></p>
+<h3 is-upgraded><strong>Total 10 overall</strong></h3>
+<p class="image-container"><img style="width: 624.00px" src="img\1920858b3b55932a.png"></p>
+<h3 is-upgraded><strong>Total Sales Timeline</strong></h3>
+<p class="image-container"><img style="width: 624.00px" src="img\1b58ea6158c19518.png"></p>
+<h3 is-upgraded><strong>Total Returns </strong></h3>
+<p class="image-container"><img style="width: 624.00px" src="img\914a9423cddd8147.png"></p>
+<h3 is-upgraded><strong>Customer Specific Filter for All Charts </strong></h3>
+<p class="image-container"><img style="width: 624.00px" src="img\e103557e50685048.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img\f0519d4c10a4ff03.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img\70499a1c71db3d0c.png"></p>
+<p class="image-container"><img style="width: 624.00px" src="img\33965cc1cddfb396.png"></p>
+<h2 is-upgraded><strong>Tableau - Dashboards</strong></h2>
+<aside class="special"><p><strong>Tableau Public Link: </strong><a href="https://public.tableau.com/profile/yufan.yang4048#!/vizhome/7374_Dashboard_1/Dashboard1" target="_blank">https://public.tableau.com/profile/yufan.yang4048#!/vizhome/7374_Dashboard_1/Dashboard1</a></p>
+</aside>
+<p class="image-container"><img style="width: 624.00px" src="img\c8eb49c738fa7e56.png"></p>
+<ul>
+<li>Observe the change in the amount and quantity of purchases per month for a user within 12 months. </li>
+</ul>
+<p class="image-container"><img style="width: 512.00px" src="img\376e005b181f3168.png"></p>
+<ul>
+<li>Wordcloud: Always show the top 10 highest return_purchase rate customers under different kinds of conditions.</li>
+</ul>
+<p class="image-container"><img style="width: 512.00px" src="img\da9b7364b11d69cc.png"></p>
+<ul>
+<li>Observe the changes of categories(companies/ brands)  been selected by a user monthly under different kinds of conditions.</li>
+</ul>
+<p class="image-container"><img style="width: 624.00px" src="img\caceb049478f39dc.png"></p>
+<ul>
+<li>For the category: observe the number of transactions and purchaseamount(sum) of different categories within the specified time range under the same brand and the same company.</li>
+</ul>
+<p class="image-container"><img style="width: 418.17px" src="img\272feb6ec28cf78f.png"></p>
+<ul>
+<li>For the brand: observe the number of transactions and purchaseamount(sum) of different brands within the specified time range under the same category and the same company.</li>
+</ul>
+<p class="image-container"><img style="width: 413.00px" src="img\c67eb1be5eabf03.png"></p>
+<ul>
+<li>For the company: observe the number of transactions and purchaseamount(sum) of different companies within the specified time range under the same type and the same brand.</li>
+</ul>
+<p class="image-container"><img style="width: 457.50px" src="img\d266fb8ab351fe9b.png"></p>
+<ul>
+<li>Selected (time range / category / brand / company), observe the total purchase amount, purchase quantity, purchase times of different users within the specified range</li>
+</ul>
+<p class="image-container"><img style="width: 465.50px" src="img\39054bc4303a80f0.png"></p>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/codelab-elements/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/prettify.js"></script>
+  <script src="https://storage.googleapis.com/codelab-elements/codelab-elements.js"></script>
+
+</body>
+</html>
