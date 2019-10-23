@@ -1,0 +1,29 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2019-10-23T05:20:26Z",
+  "id": "assignment-1-salesforce-trifacta",
+  "duration": 0,
+  "title": "Assignment 1",
+  "authors": "Vividh Talesara, Yuan Yufang",
+  "summary": "This codelab is submission of our 1st assignment from Algorithmic Digital Marketing class",
+  "source": "1K4sEpB8dnZY9TQ8wTyMzWj_96T1iedxikU23dpIHDdg",
+  "theme": "web",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "Web"
+  ],
+  "tags": [
+    "python",
+    "salesforce",
+    "tableau",
+    "trifacta",
+    "windows"
+  ],
+  "feedback": "https://github.com/VividhTalesara-Data/Automated-Kanban/blob/master/Issues",
+  "url": "assignment-1-salesforce-trifacta"
+}
